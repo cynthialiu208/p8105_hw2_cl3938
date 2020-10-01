@@ -3,6 +3,8 @@ title: "p8105_hw2_cl3938"
 output: github_document
 ---
 
+#Question 1
+
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(readxl)
@@ -78,3 +80,32 @@ Additional information regarding precipitation is also available in this dataset
 There are a total of `r nrow(precip_df)` rows in our final Mr. Trash Wheel dataset.
 
 * The total precipitation in 2018 was `r precip_df %>% filter(year == 2018) %>% pull(total) %>% sum()` inches.
+
+#Question 2
+
+Define relative path to the data
+```{r path2}
+subway_data_file = "./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv"
+```
+
+Read in the NY Subway Transit information.
+
+```{r subway}
+ny_transit_df = 
+	read_csv(
+		file = subway_data_file) %>% 
+	janitor::clean_names() %>%
+  select(line:entry, vending, ada) %>%
+  mutate(entry = recode(entry,'YES' = TRUE, 'NO' = FALSE) )
+```
+
+This dataset comprises entry and exit data for every subway station in NYC. Variables contained include line, station name, longitude & latitude, routes served, as well as information about entry and ADA compliance. A CSV file was read in, variable names cleaned, then variables of interest were selectively extracted. Finally, the entry variable was recoded from character to logical. This data is relatively tidy, though the vending variable could be further cleaned into a logical and duplicates have not been removed, so there is further potential for cleaning.
+
+This data set has `r nrow(ny_transit_df)` rows and `r ncol(ny_transit_df)` columns. 
+
+There are `r nrow(ny_transit_df %>% distinct(line, station_name)) ` unique stations.
+
+There are `r nrow(filter(ny_transit_df, ada=TRUE))` stations that are ADA compliant
+
+`r (nrow(filter(ny_transit_df, entry == TRUE, vending == "NO")))/(nrow(filter(ny_transit_df, vending == "NO")))` of station entrances without vending allow entrance
+

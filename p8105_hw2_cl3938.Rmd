@@ -114,7 +114,7 @@ There are `r nrow(filter(ny_transit_df, ada=TRUE))` stations that are ADA compli
 Define relative path to the data
 ```{r path3}
 pol_data_file = "./data/pols-month.csv"
-snp_data_file = "./snp.csv"
+snp_data_file = "./data/snp.csv"
 unemployment_data_file = "./data/unemployment.csv"
 ```
 
@@ -129,4 +129,14 @@ pols_df =
   mutate(president = if_else(prez_gop==0, "dem", "gop")) %>%
   select(-day, -prez_dem, -prez_gop )
 ```
-  
+
+SNP cleaning
+```{r snp}
+snp_df = 
+	read_csv(
+		file = snp_data_file) %>% 
+	janitor::clean_names() %>%
+  separate(date, into = c("year", "month", "day"), sep = "/") %>%
+  arrange(year,month) %>%
+  select(-day)
+```
